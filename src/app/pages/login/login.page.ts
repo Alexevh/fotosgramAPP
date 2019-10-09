@@ -1,111 +1,87 @@
-import { Component, OnInit, ɵConsole, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { IonSlides, NavController } from '@ionic/angular';
-import { UsuarioService } from '../../services/usuario.service';
+import { Component, OnInit, ɵConsole, ViewChild } from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { IonSlides, NavController } from "@ionic/angular";
+import { UsuarioService } from "../../services/usuario.service";
+import { UiserviceService } from "../../services/uiservice.service";
+import { Usuario } from "src/interfaces/interfaces";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: "app-login",
+  templateUrl: "./login.page.html",
+  styleUrls: ["./login.page.scss"]
 })
 export class LoginPage implements OnInit {
+  @ViewChild("Slideprincipal", { static: true }) slide: IonSlides;
 
 
-@ViewChild('Slideprincipal', {static: true}) slide : IonSlides;
 
-
-  avatars = [
-    {
-      img: 'av-1.png',
-      seleccionado: true
-    },
-    {
-      img: 'av-2.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-3.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-4.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-5.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-6.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-7.png',
-      seleccionado: false
-    },
-    {
-      img: 'av-8.png',
-      seleccionado: false
-    },
-];
-
-
-/* elemto que voy a usar para mandar la data a los servicios , me sirve por que cada uno de estos variables internas las ato a un 
+  /* elemto que voy a usar para mandar la data a los servicios , me sirve por que cada uno de estos variables internas las ato a un 
 elemento del formulario*/
-loginUser = {
-  email: 'gsgsg2s@gsgg.com',
-  password: '123456'
-};
+  loginUser = {
+    email: "gsgsg2s@gsgg.com",
+    password: "123456"
+  };
+
+  registerUser: Usuario = {
+    email: 'test',
+    password: '123456',
+    nombre: 'Test',
+    avatar: 'av-1.png'
+  };
 
 
-avatarSlide = {
-  slidesPerView: 3.5,
-
-}
-
-  constructor(private uservice: UsuarioService, private navCtrl: NavController) { }
+  constructor(
+    private uservice: UsuarioService,
+    private navCtrl: NavController,
+    private alertas: UiserviceService
+  ) {}
 
   ngOnInit() {
-
     this.slide.lockSwipes(true);
   }
 
-
-  async login(flogin: NgForm){
-
+  async login(flogin: NgForm) {
     /* en usuario.service el metodo login devuelve una promesa con el resolve que puede venir true o false
      */
-    const valido = await this.uservice.login(this.loginUser.email, this.loginUser.password);
+    const valido = await this.uservice.login(
+      this.loginUser.email,
+      this.loginUser.password
+    );
 
     /* si el resolve me dio true navego a las tabs */
-    if (valido){
-      this.navCtrl.navigateRoot('/main/tabs/tab1', {animated: true});
+    if (valido) {
+      this.navCtrl.navigateRoot("/main/tabs/tab1", { animated: true });
+    } else {
+      this.alertas.mostrarAlerta("Usuario o password invalido!");
     }
   }
 
-  registro(fregistro: NgForm){
+  async registro( fRegistro: NgForm ) {
 
-    console.log(fregistro.valid);
-  }
+    if ( fRegistro.invalid ) { return; }
 
-  seleccionarAvatar(avatar){
+    const valido = await this.uservice.registro( this.registerUser );
 
-    this.avatars.forEach(avatar => {
-      avatar.seleccionado = false;
-    });
+    if ( valido ) {
+      // navegar al tabs
+      this.navCtrl.navigateRoot( '/main/tabs/tab1', { animated: true } );
+    } else {
+      // mostrar alerta de usuario y contraseña no correctos
+      this.alertas.mostrarAlerta('Ese correo electrónico ya existe.');
+    }
 
-    avatar.seleccionado=true;
-  }
-
-  mostrarLogin(){
-
- this.slide.lockSwipes(false);
- this.slide.slideTo(0);
- this.slide.lockSwipes(true);
 
   }
 
-  mostrarRegistro(){
+
+
+  mostrarLogin() {
+    this.slide.lockSwipes(false);
+    this.slide.slideTo(0);
+    this.slide.lockSwipes(true);
+  }
+
+  mostrarRegistro() {
     this.slide.lockSwipes(false);
     this.slide.slideTo(1);
     this.slide.lockSwipes(true);

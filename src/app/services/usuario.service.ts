@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { environment } from 'src/environments/environment';
+import { Usuario } from '../../interfaces/interfaces';
 
 const URL= environment.url;
 
@@ -40,9 +41,34 @@ token: string = null;
       });
 
     });
+  }
+
+
+  registro( usuario: Usuario ) {
+
+    return new Promise( resolve => {
+
+      this.http.post(`${ URL }/user/create`, usuario )
+          .subscribe( async resp => {
+            console.log(resp);
+
+            if ( resp['ok']==='true' ) {
+              await this.guardarToken( resp['token'] );
+              resolve(true);
+            } else {
+              this.token = null;
+              this.storage.clear();
+              resolve(false);
+            }
+
+          });
+
+
+    });
 
 
   }
+
 
  /* como el token es muy largo puede demorar y por eso es preferible hacerlo async el guardado */
   async guardarToken(token: string){
