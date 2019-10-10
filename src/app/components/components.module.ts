@@ -5,6 +5,7 @@ import { PostsComponent } from './posts/posts.component';
 import { IonicModule } from '@ionic/angular';
 import { PipesModule } from '../pipes/pipes.module';
 import { AvatarSelectorComponent } from './avatar-selector/avatar-selector.component';
+import { MapaComponent } from './mapa/mapa.component';
 
 /* los componentes cuando se generan en las carpetas ueden no configurarse, si eo pasa da error, tienen que estar en las
 declarations y en los exports, siempre hay que importar IOnicmodule */
@@ -13,13 +14,15 @@ declarations y en los exports, siempre hay que importar IOnicmodule */
   declarations: [
     PostComponent,
     PostsComponent,
-    AvatarSelectorComponent
+    AvatarSelectorComponent,
+    MapaComponent
     
   ],
   exports:[
     PostComponent,
     PostsComponent,
-    AvatarSelectorComponent
+    AvatarSelectorComponent,
+    MapaComponent
    
 
   ],

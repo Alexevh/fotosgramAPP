@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 
 @Component({
@@ -11,6 +11,9 @@ export class AvatarSelectorComponent implements OnInit {
   /* esto lo usamos cuando queremos mandarle desde el componente alguna informacion a quien nos embebe para poder usar este componente
   tenemos que importarlo tanto en app.components como en el components.module del componente donde lo vamos a usar, en este caso login.module */
 @Output() avatarSeleccionado = new EventEmitter<string>();
+
+/* esto lo voy a recibir del html */
+@Input() avatarActual = 'av-1.png';
 
   avatarSlide = {
     slidesPerView: 3.5
@@ -52,7 +55,19 @@ export class AvatarSelectorComponent implements OnInit {
   ];
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  
+    this.avatars.forEach(avatar => {
+      avatar.seleccionado = false;
+    });
+
+    this.avatars.forEach(avatar => {
+       if (avatar.img===this.avatarActual){
+         avatar.seleccionado = true;
+         return;
+       }
+    });
+  }
 
 
   seleccionarAvatar(avatar) {
